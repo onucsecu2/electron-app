@@ -1,13 +1,12 @@
 {
   "name": "my-app",
-  "version": "0.0.0",
+  "version": "2.0.0",
   "main": "dist/entry.js",
   "scripts": {
     "ng": "ng",
-    "start": "concurrently \"webpack serve --port=4200\" \"electron src/entry.js\"",
+    "start": "concurrently \"webpack serve --port=4200\" \"electron src/entry.live.js\"",
     "build": "webpack",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "dist": "webpack --config=webpack.config.js --env=development && electron-builder --publish always"
   },
   "private": true,
   "dependencies": {
@@ -19,14 +18,18 @@
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
+    "electron-log": "^4.4.8",
+    "electron-updater": "^5.3.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.12.0"
+    "zone.js": "^0.12.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.0.3",
     "@angular/cli": "~15.0.3",
     "@angular/compiler-cli": "^15.0.0",
+    "@babel/core": "^7.20.5",
+    "@ngtools/webpack": "^15.0.4",
     "@types/jasmine": "~4.3.0",
     "autoprefixer": "^10.4.13",
     "babel-loader": "^9.1.0",
@@ -34,6 +37,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "electron": "^22.0.0",
+    "electron-builder": "^23.6.0",
     "exports-loader": "^4.0.0",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
@@ -65,5 +69,31 @@
     "webpack": "^5.75.0",
     "webpack-cli": "^4.10",
     "webpack-dev-server": "^4.11.1"
+  },
+  "build": {
+    "asar": false,
+    "publish": {
+      "provider": "generic",
+      "url": "https://<bucket_name>.s3.ap-northeast-1.amazonaws.com/",
+      "channel": "latest"
+    },
+    "appId": "jp.co.ba.test",
+    "productName": "MY-APP",
+    "copyright": "Copyright",
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "dist/entry.js"
+    ],
+    "directories": {
+      "buildResources": "dist/assets"
+    },
+    "mac":
+      {
+        "target": "default",
+        "category": "public.app-category.utilities",
+        "icon": "src/assets/icons/mac/icon.icns"
+      }
   }
 }

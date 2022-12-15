@@ -1,6 +1,14 @@
 const {app, BrowserWindow} = require('electron')
 const url = require('url')
+const path = require("path");
+const {autoUpdater} = require("electron-updater");
+const log = require("electron-log");
 let mainWindow
+
+autoUpdater.logger = log;
+autoUpdater.logger.transports.file.level = 'info';
+log.info('App starting...');
+
 
 function createWindow () {
   mainWindow = new BrowserWindow({
@@ -16,8 +24,8 @@ function createWindow () {
   })
 
   const mainUrl =    url.format({
-    pathname: 'localhost:4200',
-    protocol: 'http:',
+    pathname: path.join(__dirname, "index.html"),
+    protocol: 'file:',
     slashes: true
   })
 
@@ -29,8 +37,37 @@ function createWindow () {
   mainWindow.on('closed', function () {
     mainWindow = null
   })
+  autoUpdater.checkForUpdatesAndNotify().then(r => {
+    sendStatusToWindow("soiya", r)
+  } ).catch(err=>{
+    sendStatusToWindow("----------------")
+    sendStatusToWindow(err)
+    sendStatusToWindow("----------------")
+
+  });
 }
 
+function sendStatusToWindow(text) {
+  log.info(text);
+}
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (ev, info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (ev, info) => {
+  sendStatusToWindow('Update not available.');
+})
+autoUpdater.on('error', (ev, err) => {
+  sendStatusToWindow('Error in auto-updater.');
+})
+autoUpdater.on('download-progress', (ev, progressObj) => {
+  sendStatusToWindow('Download progress...');
+})
+autoUpdater.on('update-downloaded', (ev, info) => {
+  sendStatusToWindow('Update downloaded; will install in 5 seconds');
+});
 app.on('ready', createWindow)
 
 app.on('window-all-closed', function () {

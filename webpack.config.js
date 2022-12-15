@@ -301,19 +301,6 @@ module.exports = {
         },
       ]
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     { context: __dirname + '/test',
-    //       from: 'specs/**/*',
-    //       to: __dirname + '/dist/test',
-    //       noErrorOnMissing: true,
-    //       globOptions: {
-    //         dot: true,
-    //         ignore: ['**/.gitkeep']
-    //       }
-    //     }
-    //   ]
-    // }),
     new ProgressPlugin(),
     new HtmlWebpackPlugin({
       'template': './src/index.html',
